@@ -1,6 +1,6 @@
 <template>
   <v-row justify="center" align="center" class="fill-height">
-    <v-col>
+    <v-col v-if="!print">
       <v-card>
         <v-card-title>Students
            <v-spacer></v-spacer>
@@ -25,9 +25,12 @@
         </v-card-text>
         <v-card-actions>
           <v-btn dark color="green" nuxt to="/add">Add Student<v-icon>{{icons.plus}}</v-icon></v-btn>
-          <v-btn dark color="primary" nuxt to="/print">Print Student List<v-icon>{{icons.print}}</v-icon></v-btn>
+          <v-btn dark color="primary" @click="printIDS()">Print Student IDs<v-icon>{{icons.print}}</v-icon></v-btn>
         </v-card-actions>
       </v-card>
+    </v-col>
+    <v-col v-else cols="12">
+      <print-content :students="students" />
     </v-col>
   </v-row>
 </template>
@@ -42,6 +45,7 @@ export default {
   data(){
     return {
       audio: {},
+      print: false,
       search: "",
       headers: [
         {
@@ -78,24 +82,30 @@ export default {
    async playAudio(student){
       const {audio: audioName} = student;
       const indexOfStudent = this.students.findIndex( s => s.id === student.id);
-    try {
-      if (student.isPlaying){
-        this.audio.pause()
-        student.isPlaying = false;
+      try {
+        if (student.isPlaying){
+          this.audio.pause()
+          student.isPlaying = false;
+          this.$set(this.students, indexOfStudent, student)
+          return
+        }
+        else if(this.audioPlaying ){
+          this.audio.pause();
+        }
+        student.isPlaying = true;
         this.$set(this.students, indexOfStudent, student)
-        return
+        this.audio = new Audio(`http://localhost:8000/public/${audioName}`);
+        this.audio.load()
+        await this.audio.play();
+      } catch (error) {
+        console.log(error)
       }
-      else if(this.audioPlaying ){
-        this.audio.pause();
-      }
-      student.isPlaying = true;
-      this.$set(this.students, indexOfStudent, student)
-      this.audio = new Audio(`http://localhost:8000/public/${audioName}`);
-      this.audio.load()
-      await this.audio.play();
-    } catch (error) {
-      console.log(error)
-    }
+    },
+    async printIDS(){
+      this.print=true;
+      await this.$nextTick();
+      window.print();
+      this.print=false
     }
   }
 }
