@@ -1,9 +1,8 @@
 <template>
   <v-card>
     <div id="printContent" class="">
-      <v-card v-for="student in students" :key="student.id" outlined class="student-card">
-        <v-card-title>{{student.name}}</v-card-title>
-        <v-card-subtitle>{{student.id}}</v-card-subtitle>
+      <v-card v-for="student in students" :key="student.id" outlined>
+        <StudentCard :student="student" />
         <img :id="student.id" class="mx-auto code" />
       </v-card>
     </div>
