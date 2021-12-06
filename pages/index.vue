@@ -50,8 +50,8 @@
 <script>
 import {mdiCamera, mdiMagnify, mdiPencil, mdiPlay, mdiPlus, mdiPrinter, mdiStop} from '@mdi/js'
 export default {
-  async asyncData({$axios}){
-    const {data } = await $axios.get("http://localhost:8000/api/students")
+  async asyncData({$axios, $config}){
+    const {data } = await $axios.get(`${$config.apiURL}/api/students`)
     return { students:data}
   },
   data(){
@@ -108,7 +108,7 @@ export default {
         }
         student.isPlaying = true;
         this.$set(this.students, indexOfStudent, student)
-        this.audio = new Audio(`http://localhost:8000/public/${audioName}`);
+        this.audio = new Audio(`${this.$config.apiURL}/public/${audioName}`);
         this.audio.load()
         await this.audio.play();
       } catch (error) {
