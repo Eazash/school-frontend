@@ -37,12 +37,8 @@
     <v-col v-else cols="12">
       <print-content :students="students" />
     </v-col>
-    <v-dialog v-model="dialog" max-width="500px">
-      <v-card>
-        <v-card-title>Scan</v-card-title>
-        <v-divider />
-        <Scanner />
-      </v-card>
+    <v-dialog v-model="dialog" max-width="500px">      
+      <Scanner v-if="dialog" @close="dialog = false"/>
     </v-dialog>
   </v-row>
 </template>
