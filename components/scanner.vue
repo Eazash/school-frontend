@@ -93,6 +93,7 @@ export default {
     if (!isMobile() || true) { // eslint-disable-line
       try {
         this.devices = await Html5Qrcode.getCameras();
+        this.scanning = true;
         await this.$nextTick();
         this.scanner = new Html5Qrcode('scanner');
         this.selectedDevice = this.devices[0];
