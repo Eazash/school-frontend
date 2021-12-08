@@ -5,7 +5,7 @@
         <v-card-title>Students
         </v-card-title>
         <div class="d-flex justify-start flex-column flex-sm-row flex-wrap px-3 py-1"> 
-          <v-btn dark color="green" nuxt to="/add"  class="action-button" small>Add<v-icon class="action-icon">{{icons.plus}}</v-icon></v-btn>
+          <AddStudent />
           <v-btn dark color="primary" small class="action-button" @click.stop="dialog = true">Scan ID<v-icon class="action-icon">{{icons.scan}}</v-icon></v-btn>
           <v-btn dark color="orange" small class="action-button" @click="printIDS()">Print IDs<v-icon>{{icons.print}}</v-icon></v-btn>
 
@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import {mdiCamera, mdiMagnify, mdiPencil, mdiPlay, mdiPlus, mdiPrinter, mdiStop} from '@mdi/js'
+import {mdiCamera, mdiMagnify, mdiPencil, mdiPlay, mdiPrinter, mdiStop} from '@mdi/js'
 export default {
   async asyncData({$axios, $config}){
     const {data } = await $axios.get(`${$config.apiURL}/api/students`)
@@ -76,7 +76,6 @@ export default {
         pencil: mdiPencil,
         play: mdiPlay,
         stop: mdiStop,
-        plus: mdiPlus,
         print: mdiPrinter,
         search: mdiMagnify,
         scan: mdiCamera
@@ -127,12 +126,5 @@ export default {
 }
 .v-text-field {
   padding: 0;
-}
-.action-button {
-  margin-right: 8px;
-  margin-bottom: 8px;
-}
-.action-icon{
-  margin-left: 4px;
 }
 </style>
