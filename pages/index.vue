@@ -24,11 +24,14 @@
         <v-card-text>
           <v-data-table :headers="headers" :items="students" :search="search" :items-per-page="5">
             <template #item.actions="{item}"><!-- eslint-disable-line -->
-              <v-btn icon><v-icon dense>{{icons.pencil}}</v-icon></v-btn>
-              <v-btn icon  :disabled="item.audio === null" @click="playAudio(item)">
-                <v-icon v-if="item.isPlaying" dense>{{icons.stop}}</v-icon>
-                <v-icon v-else dense>{{icons.play}}</v-icon>
-              </v-btn>
+              <div :key="item.id">
+                <!-- <v-btn icon><v-icon dense>{{icons.pencil}}</v-icon></v-btn> -->
+                <v-btn icon  :disabled="item.audio === null" @click="playAudio(item)">
+                  <v-icon v-if="item.isPlaying" dense>{{icons.stop}}</v-icon>
+                  <v-icon v-else dense>{{icons.play}}</v-icon>
+                </v-btn>
+                <RecordDialog :student="item" />
+              </div>
             </template>
           </v-data-table>
         </v-card-text>
@@ -78,7 +81,7 @@ export default {
         stop: mdiStop,
         print: mdiPrinter,
         search: mdiMagnify,
-        scan: mdiCamera
+        scan: mdiCamera,
       }
     }
   },
