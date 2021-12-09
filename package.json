@@ -19,13 +19,13 @@
     "jsbarcode": "^3.11.5",
     "nuxt": "^2.15.7",
     "sass-loader": "10.1.1",
+    "@mdi/js": "^6.5.95",
     "vuetify": "^2.5.5"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.14.7",
     "@commitlint/cli": "^12.1.4",
     "@commitlint/config-conventional": "^12.1.4",
-    "@mdi/js": "^6.5.95",
     "@nuxtjs/eslint-config": "^6.0.1",
     "@nuxtjs/eslint-module": "^3.0.2",
     "@nuxtjs/vuetify": "^1.12.1",
