@@ -10,8 +10,9 @@
     </v-app-bar>
     <v-main>
       <v-container>
-        <Nuxt />
+        <Nuxt @notify.capture="openSnackbar"/>
       </v-container>
+      <NotificationSnackbar :activator.sync="snackbar" :notify="snackbarContent"/>
     </v-main>
     <v-footer
       :absolute="true"
@@ -38,7 +39,21 @@ export default {
           to: '/inspire'
         }
       ],
-      title: 'Greenland School'
+      title: 'Greenland School',
+      snackbar: false,
+      snackbarContent: {}
+    }
+  },
+  created(){
+    this.$nuxt.$on('notify', (event) => {
+      this.snackbar = true;
+      this.snackbarContent = event;
+    })
+  },
+  methods: {
+    openSnackbar(event) {
+      console.log("heeeere")
+      console.log(event)
     }
   }
 }
