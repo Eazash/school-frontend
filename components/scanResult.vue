@@ -1,7 +1,9 @@
 <template>
   <v-card class="ma-auto px-2" width="100%" min-height="100px" outlined>
     <template v-if="error">
-      <v-alert>{{errorMessage}}</v-alert>
+      <v-container>
+        <v-alert type="error" class="ma-auto">{{errorMessage}}</v-alert>
+      </v-container>
     </template>
     <template v-if="found">
       <StudentCard :student="student" />
