@@ -1,6 +1,6 @@
 <template>
   <v-snackbar v-model="display" :color="statusColor">
-    {{message}}
+    {{message || "Unknown Error"}}
     <template #action="{ attrs }">
         <v-btn
           icon

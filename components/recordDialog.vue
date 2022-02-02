@@ -51,7 +51,7 @@ export default {
         this.$refs.form.reset();
       }
     }
-  }, 
+  },
   methods: {
     async upload(){
       const formdata = new FormData();
@@ -72,6 +72,7 @@ export default {
         }
         console.log(error)
       }
+      this.$nuxt.$emit("notify", {message: `Recording added for ${this.student.id}`, status: 200})
       this.uploading = false
       this.dialog = false
     },
