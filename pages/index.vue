@@ -70,9 +70,20 @@ export default {
           value: "name"
         },
         {
+          text: "Grade",
+          value: "grade",
+          width: "15%"
+        },
+        {
+          text: "Section",
+          value: "section",
+          width: "15%",
+        },
+        {
           text: "Actions",
           value: "actions",
-          align: "right"
+          align: "right",
+          width: "15%",
         }
       ],
       icons: {
@@ -85,10 +96,19 @@ export default {
       }
     }
   },
+  async fetch(){
+    const {data } = await this.$axios.get(`${this.$config.apiURL}/api/students`)
+    this.students = data;
+  },
   computed:{
     audioPlaying(){
       return this.audio.duration > 0 && !this.audio.paused;
     }
+  },
+  mounted(){
+    this.$nuxt.$on("notify", () =>{
+      this.$nuxt.refresh();
+    })
   },
   methods:{
    async playAudio(student){
