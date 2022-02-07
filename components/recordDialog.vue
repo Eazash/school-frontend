@@ -55,8 +55,7 @@ export default {
   methods: {
     async upload(){
       const formdata = new FormData();
-      formdata.append("audio", this.audio);
-      formdata.append("id", this.student.id);
+      formdata.append("file", this.audio);
       const config = {
         headers: { "Content-Type": "multipart/form-data" },
         onUploadProgress: this.onUploadProgress
@@ -64,15 +63,17 @@ export default {
       this.uploading = true;
       await this.$nextTick();
       try {
-        const { data: user } = await this.$axios.post(`${this.$config.apiURL}/api/students/audio`, formdata, config);
+        const { data: user } = await this.$axios.post(`${this.$config.apiURL}/api/students/audio/${this.student.id}`, formdata, config);
+        this.$nuxt.$emit("notify", {message: `Recording added for ${this.student.id}`})
         console.log(user);
       } catch (error) {
         if(error.response) {
           console.log(error.message);
+          this.$nuxt.$emit("notify", {message: `Error: ${error.response.data}`, status: 400})
         }
         console.log(error)
+        this.$nuxt.$emit("notify", {message: "Unknown Error", status: 500})
       }
-      this.$nuxt.$emit("notify", {message: `Recording added for ${this.student.id}`, status: 200})
       this.uploading = false
       this.dialog = false
     },
