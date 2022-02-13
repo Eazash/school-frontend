@@ -41,6 +41,7 @@
                   <v-icon v-else dense>{{ icons.play }}</v-icon>
                 </v-btn>
                 <RecordDialog :student="item" />
+                <DeleteDialog :student="item" />
               </div>
             </template>
           </v-data-table>
