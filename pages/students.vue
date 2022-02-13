@@ -2,17 +2,17 @@
   <v-row justify="center" align="center" class="fill-height">
     <v-col v-if="!print">
       <v-card>
-        <v-card-title>Students
-        </v-card-title>
-        <div class="d-flex justify-start flex-column flex-sm-row flex-wrap px-3 py-1"> 
+        <v-card-title>Students </v-card-title>
+        <div
+          class="d-flex justify-start flex-column flex-sm-row flex-wrap px-3 py-1"
+        >
           <AddStudent />
-          <v-btn dark color="primary" small class="action-button" @click.stop="dialog = true">Scan ID<v-icon class="action-icon">{{icons.scan}}</v-icon></v-btn>
-          <v-btn dark color="orange" small class="action-button" @click="printIDS()">Print IDs<v-icon>{{icons.print}}</v-icon></v-btn>
+          <PrintStudents @print="printStudents" />
 
-          <v-spacer />  
-          
+          <v-spacer />
+
           <v-text-field
-          id="search-bar"
+            id="search-bar"
             v-model="search"
             class="flex-grow-1"
             :append-icon="icons.search"
@@ -22,13 +22,23 @@
           ></v-text-field>
         </div>
         <v-card-text>
-          <v-data-table ref="studentsTable" :headers="headers" :items="students" :search="search" :items-per-page="5">
-            <template #item.actions="{item}"><!-- eslint-disable-line -->
+          <v-data-table
+            ref="studentsTable"
+            :headers="headers"
+            :items="students"
+            :search="search"
+            :items-per-page="5"
+          >
+            <template #item.actions="{ item }">
               <div :key="item.id">
                 <!-- <v-btn icon><v-icon dense>{{icons.pencil}}</v-icon></v-btn> -->
-                <v-btn icon  :disabled="item.audio === null" @click="playAudio(item)">
-                  <v-icon v-if="item.isPlaying" dense>{{icons.stop}}</v-icon>
-                  <v-icon v-else dense>{{icons.play}}</v-icon>
+                <v-btn
+                  icon
+                  :disabled="item.audio === null"
+                  @click="playAudio(item)"
+                >
+                  <v-icon v-if="item.isPlaying" dense>{{ icons.stop }}</v-icon>
+                  <v-icon v-else dense>{{ icons.play }}</v-icon>
                 </v-btn>
                 <RecordDialog :student="item" />
               </div>
@@ -40,108 +50,115 @@
     <v-col v-else cols="12">
       <print-content :students="studentsToPrint" />
     </v-col>
-    <v-dialog v-model="dialog" max-width="500px">      
-      <Scanner v-if="dialog" @close="dialog = false"/>
+    <v-dialog v-model="dialog" max-width="500px">
+      <Scanner v-if="dialog" @close="dialog = false" />
     </v-dialog>
   </v-row>
 </template>
 
 <script>
-import {mdiCamera, mdiMagnify, mdiPencil, mdiPlay, mdiPrinter, mdiStop} from '@mdi/js'
+import { mdiCamera, mdiMagnify, mdiPencil, mdiPlay, mdiStop } from '@mdi/js'
 export default {
-  async asyncData({$axios, $config}){
-    const {data } = await $axios.get(`${$config.apiURL}/api/students`)
-    return { students:data}
+  async asyncData({ $axios, $config }) {
+    const { data } = await $axios.get(`${$config.apiURL}/api/students`)
+    return { students: data }
   },
-  data(){
+  data() {
     return {
       audio: {},
-      dialog: false,  
+      dialog: false,
       studentsToPrint: [],
       print: false,
-      search: "",
+      search: '',
       headers: [
         {
-          text: "Student ID",
-          value: "id",
-          width: "20%"
+          text: 'Student ID',
+          value: 'id',
+          width: '20%',
         },
         {
-          text: "Full Name",
-          value: "name"
+          text: 'Full Name',
+          value: 'name',
         },
         {
-          text: "Grade",
-          value: "grade",
-          width: "15%"
+          text: 'Grade',
+          value: 'grade',
+          width: '15%',
         },
         {
-          text: "Section",
-          value: "section",
-          width: "15%",
+          text: 'Section',
+          value: 'section',
+          width: '15%',
         },
         {
-          text: "Actions",
-          value: "actions",
-          align: "right",
-          width: "15%",
-        }
+          text: 'Actions',
+          value: 'actions',
+          align: 'right',
+          width: '15%',
+        },
       ],
       icons: {
         pencil: mdiPencil,
         play: mdiPlay,
         stop: mdiStop,
-        print: mdiPrinter,
         search: mdiMagnify,
         scan: mdiCamera,
-      }
+      },
     }
   },
-  async fetch(){
-    const {data } = await this.$axios.get(`${this.$config.apiURL}/api/students`)
-    this.students = data;
+  async fetch() {
+    const { data } = await this.$axios.get(
+      `${this.$config.apiURL}/api/students`
+    )
+    this.students = data
   },
-  computed:{
-    audioPlaying(){
-      return this.audio.duration > 0 && !this.audio.paused;
-    }
+  computed: {
+    audioPlaying() {
+      return this.audio.duration > 0 && !this.audio.paused
+    },
   },
-  mounted(){
-    this.$nuxt.$on("notify", () =>{
-      this.$nuxt.refresh();
+  mounted() {
+    this.$nuxt.$on('notify', () => {
+      this.$nuxt.refresh()
     })
   },
-  methods:{
-   async playAudio(student){
-      const {audio: audioName} = student;
-      const indexOfStudent = this.students.findIndex( s => s.id === student.id);
+  methods: {
+    async playAudio(student) {
+      const { audio: audioName } = student
+      const indexOfStudent = this.students.findIndex((s) => s.id === student.id)
       try {
-        if (student.isPlaying){
+        if (student.isPlaying) {
           this.audio.pause()
-          student.isPlaying = false;
+          student.isPlaying = false
           this.$set(this.students, indexOfStudent, student)
           return
+        } else if (this.audioPlaying) {
+          this.audio.pause()
         }
-        else if(this.audioPlaying ){
-          this.audio.pause();
-        }
-        student.isPlaying = true;
+        student.isPlaying = true
         this.$set(this.students, indexOfStudent, student)
-        this.audio = new Audio(`${this.$config.apiURL}/public/${audioName}`);
+        this.audio = new Audio(`${this.$config.apiURL}/public/${audioName}`)
         this.audio.load()
-        await this.audio.play();
+        await this.audio.play()
       } catch (error) {
         console.log(error)
       }
     },
-    async printIDS(){
-      this.print=true;
+    async printStudents(payload) {
+      this.print = true
+      this.studentsToPrint = payload
+      await this.$nextTick()
+      window.print()
+      this.print = false
+    },
+    async printIDS() {
+      this.print = true
       this.studentsToPrint = this.$refs.studentsTable.$children[0].filteredItems
-      await this.$nextTick();
-      window.print();
-      this.print=false
-    }
-  }
+      await this.$nextTick()
+      window.print()
+      this.print = false
+    },
+  },
 }
 </script>
 
