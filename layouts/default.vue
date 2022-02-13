@@ -1,29 +1,16 @@
 <template>
   <v-app dark>
-    <v-navigation-drawer app clipped>
-      <v-list dense nav>
-        <v-list-item router to="/">
-          <v-list-item-icon
-            ><v-icon>{{ icons.scan }}</v-icon></v-list-item-icon
-          >
-          <v-list-item-content>
-            <v-list-item-title>Scan</v-list-item-title>
-          </v-list-item-content></v-list-item
-        >
-        <v-list-item router to="/students">
-          <v-list-item-icon
-            ><v-icon>{{ icons.students }}</v-icon></v-list-item-icon
-          >
-
-          <v-list-item-content>
-            <v-list-item-title>Students</v-list-item-title>
-          </v-list-item-content></v-list-item
-        >
-      </v-list>
-    </v-navigation-drawer>
     <v-app-bar fixed clipped-left dense app>
       <v-toolbar-title v-text="title" />
       <v-spacer />
+      <v-btn text router to="/" class="mr-2">
+        <v-icon>{{ icons.scan }}</v-icon>
+        <span class="mr-1">Scan</span>
+      </v-btn>
+      <v-btn text router to="/students">
+        <v-icon>{{ icons.students }}</v-icon>
+        <span class="mr-1">Students</span>
+      </v-btn>
     </v-app-bar>
     <v-main>
       <v-container>
