@@ -11,16 +11,9 @@
               label="Username"
               :rules="[required]"
               dense
+              outlined
             />
-            <v-text-field
-              v-model="password"
-              label="Password"
-              :type="passwordVisible ? 'text' : 'password'"
-              dense
-              :append-icon="passwordVisible ? icons.hide : icons.show"
-              :rules="[required]"
-              @click:append="passwordVisible = passwordVisible"
-            />
+            <PasswordField v-model="password" label="Password"/>
           </v-form>
         </v-card-text>
         <v-card-actions>
@@ -40,7 +33,6 @@
 </template>
 
 <script>
-import { mdiEye, mdiEyeOff } from '@mdi/js'
 export default {
   data() {
     return {
@@ -48,12 +40,7 @@ export default {
       valid: false,
       username: '',
       password: '',
-      icons: {
-        show: mdiEye,
-        hide: mdiEyeOff,
-      },
       required: (value) => !!value || 'Field is Required',
-      passwordVisible: false,
     }
   },
   methods: {
