@@ -30,7 +30,7 @@
 import { mdiAccountGroup, mdiBarcodeScan, mdiExitToApp } from '@mdi/js'
 import { mapGetters } from 'vuex'
 export default {
-  middleware: ['auth'],
+  middleware: ['auth', 'admin'],
   data() {
     return {
       icons: {
