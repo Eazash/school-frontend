@@ -89,13 +89,12 @@ export default {
         {
           text: 'Section',
           value: 'section',
-          width: '15%',
+          width: '10%',
         },
         {
           text: 'Actions',
           value: 'actions',
           align: 'right',
-          width: '15%',
         },
       ],
       icons: {
