@@ -60,6 +60,7 @@
 <script>
 import { mdiCamera, mdiMagnify, mdiPencil, mdiPlay, mdiStop } from '@mdi/js'
 export default {
+  layout: "admin",
   async asyncData({ $axios, $config }) {
     const { data } = await $axios.get(`${$config.apiURL}/api/students`)
     return { students: data }

@@ -4,9 +4,9 @@
       <v-toolbar-title v-text="title" />
       <v-spacer />
       <template v-if="authenticated">
-        <v-btn text router to="/" class="mr-2">
-          <v-icon>{{ icons.scan }}</v-icon>
-          <span class="mr-1">Scan</span>
+        <v-btn text router to="/students">
+          <v-icon>{{ icons.students }}</v-icon>
+          <span class="mr-1">Students</span>
         </v-btn>
         <v-btn @click="logout">
           <v-icon>{{icons.exit}}</v-icon>

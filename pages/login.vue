@@ -65,14 +65,18 @@ export default {
           { username: this.username, password: this.password }
         )
         this.$store.commit('login', data)
-        this.$router.push("/")
+        if (data.user.role === 'admin') {
+          this.$router.push('/students')
+        } else {
+          this.$router.push('/')
+        }
       } catch (error) {
+        console.dir(error)
         if (error.response) {
           const notification = {
             message: error.response.data.message,
             status: error.response.status,
           }
-
           this.$nuxt.$emit('notify', notification)
         } else {
           this.$nuxt.$emit('notify', { message: error.message, status: 500 })
