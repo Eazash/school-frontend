@@ -3,17 +3,23 @@
     <v-app-bar fixed clipped-left dense app>
       <v-toolbar-title v-text="title" />
       <v-spacer />
-      <v-btn text router to="/" class="mr-2">
-        <v-icon>{{ icons.scan }}</v-icon>
-        <span class="mr-1">Scan</span>
-      </v-btn>
-      <v-btn text router to="/students">
-        <v-icon>{{ icons.students }}</v-icon>
-        <span class="mr-1">Students</span>
-      </v-btn>
+      <template v-if="authenticated">
+        <v-btn text router to="/" class="mr-2">
+          <v-icon>{{ icons.scan }}</v-icon>
+          <span class="mr-1">Scan</span>
+        </v-btn>
+        <v-btn text router to="/students">
+          <v-icon>{{ icons.students }}</v-icon>
+          <span class="mr-1">Students</span>
+        </v-btn>
+        <v-btn @click="logout">
+          <v-icon>{{icons.exit}}</v-icon>
+          <span class="mr-1">Logout</span>
+        </v-btn>
+      </template>
     </v-app-bar>
     <v-main>
-      <v-container>
+      <v-container class="fill-height">
         <Nuxt @notify.capture="openSnackbar" />
       </v-container>
       <NotificationSnackbar
@@ -28,11 +34,14 @@
 </template>
 
 <script>
-import { mdiAccountGroup, mdiBarcodeScan } from '@mdi/js'
+import { mdiAccountGroup, mdiBarcodeScan, mdiExitToApp } from '@mdi/js'
+import { mapGetters } from 'vuex'
 export default {
+  middleware: ['auth'],
   data() {
     return {
       icons: {
+        exit: mdiExitToApp,
         scan: mdiBarcodeScan,
         students: mdiAccountGroup,
       },
@@ -47,11 +56,13 @@ export default {
       this.snackbarContent = event
     })
   },
+  computed: {
+    ...mapGetters(['authenticated']),
+  },
   methods: {
-    openSnackbar(event) {
-      console.log('heeeere')
-      console.log(event)
-    },
+    logout() {
+      this.$store.commit("logout");
+    }
   },
 }
 </script>
