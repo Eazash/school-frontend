@@ -8,10 +8,7 @@
           <v-icon>{{ icons.students }}</v-icon>
           <span class="mr-1">Students</span>
         </v-btn>
-        <v-btn @click="logout">
-          <v-icon>{{icons.exit}}</v-icon>
-          <span class="mr-1">Logout</span>
-        </v-btn>
+        <LogoutButton />
       </template>
     </v-app-bar>
     <v-main>
@@ -54,11 +51,6 @@ export default {
   },
   computed: {
     ...mapGetters(['authenticated']),
-  },
-  methods: {
-    logout() {
-      this.$store.commit("logout");
-    }
   },
 }
 </script>
