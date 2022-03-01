@@ -74,6 +74,8 @@ export default {
           }
 
           this.$nuxt.$emit('notify', notification)
+        } else {
+          this.$nuxt.$emit('notify', { message: error.message, status: 500 })
         }
       } finally {
         this.loading = false
