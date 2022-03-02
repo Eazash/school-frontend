@@ -8,6 +8,10 @@
           <v-icon>{{ icons.students }}</v-icon>
           <span class="mr-1">Students</span>
         </v-btn>
+        <v-btn text router to="/staff" class="ml-2">
+          <v-icon>{{ icons.users }}</v-icon>
+          <span class="mr-1">Staff</span>
+        </v-btn>
         <LogoutButton />
       </template>
     </v-app-bar>
@@ -27,7 +31,12 @@
 </template>
 
 <script>
-import { mdiAccountGroup, mdiBarcodeScan, mdiExitToApp } from '@mdi/js'
+import {
+  mdiAccountGroup,
+  mdiAccountGroupOutline,
+  mdiBarcodeScan,
+  mdiExitToApp,
+} from '@mdi/js'
 import { mapGetters } from 'vuex'
 export default {
   middleware: ['auth', 'admin'],
@@ -37,6 +46,7 @@ export default {
         exit: mdiExitToApp,
         scan: mdiBarcodeScan,
         students: mdiAccountGroup,
+        users: mdiAccountGroupOutline,
       },
       title: 'Greenland School',
       snackbar: false,
