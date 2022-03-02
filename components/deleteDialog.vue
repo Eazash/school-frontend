@@ -9,7 +9,7 @@
       <v-card-title>Confirm Delete</v-card-title>
       <v-divider></v-divider>
       <p class="heading-5 mt-2 mb-4 px-4">
-        Are you sure you want to delete <span>'{{ student.name }}'</span>
+        <slot />
       </p>
       <v-card-actions>
         <v-btn
@@ -23,7 +23,7 @@
           :disabled="loading"
           outlined
           color="red"
-          @click="deleteStudent"
+          @click="$emit('confirm')"
           >Confirm</v-btn
         >
       </v-card-actions>
@@ -35,39 +35,18 @@
 import { mdiDelete } from '@mdi/js'
 export default {
   props: {
-    student: {
-      type: Object,
-      required: true,
-    },
+    loading: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
       dialog: false,
-      loading: false,
       icons: {
         delete: mdiDelete,
       },
     }
-  },
-  methods: {
-    async deleteStudent() {
-      this.loading = true
-      try {
-        await this.$axios.delete(
-          `${this.$config.apiURL}/api/students/${this.student.id}`
-        )
-        this.$nuxt.$emit('notify', { message: 'Student successfully deleted' })
-      } catch (error) {
-        if (error.response) {
-          this.$nuxt.$emit('notifiy', {
-            message: error.response.data,
-            status: error.response.status,
-          })
-        } else {
-          this.$nuxt.$emit('notify', { message: 'Unknown Error', status: 500 })
-        }
-      }
-    },
   },
 }
 </script>
