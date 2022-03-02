@@ -1,33 +1,34 @@
 <template>
   <v-text-field
-    v-model="value"
+    v-model="internalValue"
     label="Password"
     outlined
+    hide-details="auto"
     :type="passwordVisible ? 'text' : 'password'"
     dense
     :append-icon="passwordVisible ? icons.hide : icons.show"
     :rules="[required]"
     @click:append="passwordVisible = !passwordVisible"
-    @change="updateValue"
+    @input="updateValue"
   />
 </template>
 
 <script>
 import { mdiEye, mdiEyeOff } from '@mdi/js'
 export default {
-  model: {
-    prop: "value",
-    event: "change",
-  },
   props: {
     label: {
       type: String,
       required: true
+    },
+    value: {
+      type: String,
+      default: ""
     }
   },
   data(){
     return { 
-      value: "",
+      internalValue: this.value ,
       icons: {
         show: mdiEye,
         hide: mdiEyeOff,
@@ -38,7 +39,7 @@ export default {
   },
   methods: {
     updateValue() {
-      this.$emit("change", this.value)
+      this.$emit("update:value", this.internalValue)
     }
   }
 }

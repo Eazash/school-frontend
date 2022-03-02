@@ -13,7 +13,7 @@
               dense
               outlined
             />
-            <PasswordField v-model="password" label="Password"/>
+            <PasswordField :value.sync="password" label="Password"/>
           </v-form>
         </v-card-text>
         <v-card-actions>

@@ -32,7 +32,7 @@
             :rules="[rules.required]"
             outlined
           />
-          <PasswordField v-model="password" label="Account Password" />
+          <PasswordField :value.sync="password" label="Account Password" />
           <v-select
             v-model="gradeSelection"
             dense

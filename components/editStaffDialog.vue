@@ -71,7 +71,7 @@
             <v-row align="center">
               <v-col cols="8">
                 <v-form v-model="passwordValid">
-                  <PasswordField v-model="password" label="Update Password" />
+                  <PasswordField :value.sync="password" label="Update Password" />
                 </v-form>
               </v-col>
               <v-col cols="4">
