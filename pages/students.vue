@@ -29,6 +29,13 @@
             :search="search"
             :items-per-page="5"
           >
+            <template #item.image="{ item }">
+                  <div class="hover-wrapper">
+                    <StudentAvatar :size="100" :image="item.image" />
+                    <UploadImageDialog :student="item" />
+                  </div>
+              </v-hover>
+            </template>
             <template #item.actions="{ item }">
               <div :key="item.id">
                 <!-- <v-btn icon><v-icon dense>{{icons.pencil}}</v-icon></v-btn> -->
@@ -60,7 +67,7 @@
 <script>
 import { mdiCamera, mdiMagnify, mdiPencil, mdiPlay, mdiStop } from '@mdi/js'
 export default {
-  layout: "admin",
+  layout: 'admin',
   async asyncData({ $axios, $config }) {
     const { data } = await $axios.get(`${$config.apiURL}/api/students`)
     return { students: data }
@@ -74,9 +81,14 @@ export default {
       search: '',
       headers: [
         {
+          text: 'Image',
+          value: 'image',
+          align: 'right',
+          width: '10%',
+        },
+        {
           text: 'Student ID',
           value: 'id',
-          width: '20%',
         },
         {
           text: 'Full Name',
@@ -85,12 +97,15 @@ export default {
         {
           text: 'Grade',
           value: 'grade',
-          width: '15%',
         },
         {
           text: 'Section',
           value: 'section',
-          width: '10%',
+        },
+        {
+          text: 'Secret Code',
+          value: 'code',
+          width: '15%',
         },
         {
           text: 'Actions',
@@ -163,7 +178,24 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+.hover-wrapper {
+  height: 100%;
+  position: relative;
+}
+.hover-wrapper button {
+  display: none;
+}
+
+.hover-wrapper:hover button {
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
 #search-bar {
   max-width: 450px;
 }
