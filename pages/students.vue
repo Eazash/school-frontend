@@ -31,7 +31,7 @@
           >
             <template #item.image="{ item }">
                   <div class="hover-wrapper">
-                    <StudentAvatar :size="100" :image="item.image" />
+                    <StudentAvatar :size="75" :image="item.image" />
                     <UploadImageDialog :student="item" />
                   </div>
               </v-hover>
@@ -180,7 +180,10 @@ export default {
 
 <style lang="scss">
 .hover-wrapper {
-  height: 100%;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   position: relative;
 }
 .hover-wrapper button {
