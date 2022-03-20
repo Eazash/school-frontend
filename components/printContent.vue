@@ -1,16 +1,14 @@
 <template>
-  <v-card>
-    <div id="printContent" class="">
-      <v-row>
-        <v-col v-for="student in students" :key="student.id" cols="5">
-          <v-card outlined>
-            <StudentCard :student="student" />
-            <img :id="student.id" class="mx-auto code" />
-          </v-card>
-        </v-col>
-      </v-row>
-    </div>
-  </v-card>
+  <div id="printContent" class="">
+    <v-row justify="space-around">
+      <v-col v-for="student in students" :key="student.id" cols="6">
+        <v-card outlined class="pa-2">
+          <StudentCard :student="student" />
+          <img :id="student.id" class="mx-auto code" height="80px"/>
+        </v-card>
+      </v-col>
+    </v-row>
+  </div>
 </template>
 
 <script>
