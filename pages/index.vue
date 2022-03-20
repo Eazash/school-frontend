@@ -3,29 +3,47 @@
   <v-row justify="center" align="start">
     <v-col>
       <v-container>
-        <v-card min-height="50vh" max-height="80vh" :loading="loading">
+        <v-card
+          min-height="50vh"
+          max-height="80vh"
+          class="scroll"
+          :loading="loading"
+        >
           <v-card-title>Scan Student IDs</v-card-title>
           <v-divider />
           <v-card-text>
-            <v-container fluid>
-              <v-row justify="center" align="center"
-                ><v-col>Student will be displayed here</v-col></v-row
-              >
-              <v-text-field
-                ref="input"
-                v-model="input"
-                autofocus
-                :disabled="loading"
-                @keyup.enter="scan"
-              ></v-text-field>
-              <ScanResult v-if="found" :student="student" />
-              <template v-if="errored">
-                <v-container>
-                  <v-alert type="error" class="ma-auto">{{
-                    errorMessage
-                  }}</v-alert>
-                </v-container>
-              </template>
+            <v-container>
+              <v-row justify="center" align="center">
+                <v-col cols="12">
+                  <v-text-field
+                    ref="input"
+                    v-model="input"
+                    autofocus
+                    :disabled="loading"
+                    @keyup.enter="scan"
+                  ></v-text-field>
+                </v-col>
+                <v-col
+                  v-for="(student, index) in reversedStudentList"
+                  :key="index"
+                  cols="12"
+                >
+                  <ScanResult
+                    v-if="found"
+                    :student="student"
+                    :play="index === 0"
+                  />
+                </v-col>
+                <template v-if="errored">
+                  <v-col cols="12">
+                    <v-container>
+                      <v-alert type="error" class="ma-auto">{{
+                        errorMessage
+                      }}</v-alert>
+                    </v-container>
+                  </v-col>
+                </template>
+              </v-row>
             </v-container>
           </v-card-text>
         </v-card>
@@ -46,12 +64,15 @@ export default {
       errored: false,
       errorMessage: '',
       input: '',
-      student: {},
+      students: [],
       socket: {},
     }
   },
   computed: {
     ...mapGetters(['section']),
+    reversedStudentList() {
+      return this.students.slice(0).reverse();
+    }
   },
   mounted() {
     this.focus()
@@ -69,9 +90,9 @@ export default {
     )
     this.socket.on('result', (value) => {
       this.$nextTick(() => {
-        this.student = value;
-        this.found = true;
-        this.errored = false;
+        this.addStudent(value);
+        this.found = true
+        this.errored = false
       })
     })
   },
@@ -83,7 +104,8 @@ export default {
           `${this.$config.apiURL}/api/students/${this.input}`
         )
         console.log(student)
-        this.student = student
+        this.addStudent(student)
+
         this.socket.emit('scan', student)
         this.found = true
         this.errored = false
@@ -99,13 +121,30 @@ export default {
       } finally {
         this.loading = false
         this.focus()
+        this.clear()
       }
+    },
+    addStudent(newStudent) {
+      const indexOfExisting = this.students.findIndex(
+        (existing) => existing.id === newStudent.id
+      )
+      if (indexOfExisting !== -1) {
+        this.students.splice(indexOfExisting,1);
+      }
+      this.students.push(newStudent);
     },
     focus() {
       this.$nextTick(this.$refs.input.focus)
+    },
+    clear() {
+      this.$nextTick(this.$refs.input.reset)
     },
   },
 }
 </script>
 
-<style></style>
+<style>
+.scroll {
+  overflow: scroll;
+}
+</style>
