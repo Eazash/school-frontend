@@ -19,7 +19,9 @@ export default  async function () {
     css: ['@/assets/css/main.css'],
 
     // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-    plugins: [],
+    plugins: [
+      "~/plugins/persistedState"
+    ],
 
     // Auto import components: https://go.nuxtjs.dev/config-components
     components: true,
@@ -40,6 +42,8 @@ export default  async function () {
       '@nuxtjs/pwa',
       // Nuxt Socket
       'nuxt-socket-io',
+      // Client and server side cookies
+      'cookie-universal-nuxt'
     ],
     io: {
       server: {
