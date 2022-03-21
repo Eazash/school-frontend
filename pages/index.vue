@@ -9,12 +9,15 @@
           class="scroll"
           :loading="loading"
         >
-          <v-card-title>Scan Student IDs</v-card-title>
+          <v-card-title>
+            <span v-if="isAssistantAdmin">Scan Student IDs</span>
+            <span v-else>Student Results</span>
+          </v-card-title>
           <v-divider />
           <v-card-text>
             <v-container>
               <v-row justify="center" align="center">
-                <v-col cols="12">
+                <v-col v-if="isAssistantAdmin" cols="12">
                   <v-text-field
                     ref="input"
                     v-model="input"
@@ -69,32 +72,35 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['section']),
+    ...mapGetters(['section', 'isAssistantAdmin']),
     reversedStudentList() {
-      return this.students.slice(0).reverse();
-    }
+      return this.students.slice(0).reverse()
+    },
   },
   mounted() {
     this.focus()
-    if (this.section === null) {
-      this.$nuxt.$emit('notify', {
-        message: 'Error with assigned section. Please try reassigning section',
-        status: 400,
-      })
-      return
-    }
     this.socket = io(this.$config.apiURL)
-    this.socket.emit(
-      'attachToClass',
-      `${this.section.grade}:${this.section.section}`
-    )
-    this.socket.on('result', (value) => {
-      this.$nextTick(() => {
-        this.addStudent(value);
-        this.found = true
-        this.errored = false
+    if (!this.isAssistantAdmin) {
+      if (this.section === null) {
+        this.$nuxt.$emit('notify', {
+          message:
+            'Error with assigned section. Please try reassigning section',
+          status: 400,
+        })
+        return
+      }
+      this.socket.emit(
+        'attachToClass',
+        `${this.section.grade}:${this.section.section}`
+      )
+      this.socket.on('result', (value) => {
+        this.$nextTick(() => {
+          this.addStudent(value)
+          this.found = true
+          this.errored = false
+        })
       })
-    })
+    }
   },
   methods: {
     async scan() {
@@ -129,15 +135,19 @@ export default {
         (existing) => existing.id === newStudent.id
       )
       if (indexOfExisting !== -1) {
-        this.students.splice(indexOfExisting,1);
+        this.students.splice(indexOfExisting, 1)
       }
-      this.students.push(newStudent);
+      this.students.push(newStudent)
     },
     focus() {
-      this.$nextTick(this.$refs.input.focus)
+      if (this.isAssistantAdmin) {
+        this.$nextTick(this.$refs.input.focus)
+      }
     },
     clear() {
-      this.$nextTick(this.$refs.input.reset)
+      if (this.isAssistantAdmin) {
+        this.$nextTick(this.$refs.input.reset)
+      }
     },
   },
 }

@@ -17,5 +17,6 @@ export const mutations = {
 export const getters = {
   authenticated: (state) => state.token !== null,
   isAdmin: ({ user }) => user !== null && user.role === 'admin',
+  isAssistantAdmin: ({user}) => user!== null && user.role === 'assistant-admin',
   section: ({user}) => user === null? null : user.section
 }
