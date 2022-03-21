@@ -1,6 +1,63 @@
 <template>
-  <v-row justify="center" align="center" class="fill-height">
-    <v-col v-if="!print">
+  <v-row justify="center" align="start" class="fill-height">
+    <v-col cols="12">
+      <v-card>
+        <v-card-title>Assistant Admin Account</v-card-title>
+        <v-container>
+          <v-form v-model="nameValid">
+            <v-row justify="space-around" align="start" no-gutters>
+              <v-col cols="6">
+                <v-text-field
+                  v-model="assistantFullName"
+                  dense
+                  label="Assistant's Name"
+                  outlined
+                  :rules="[rules.required]"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="4" class="my-1">
+                <v-btn
+                  class="action-card"
+                  outlined
+                  color="primary"
+                  :disabled="!nameValid || assistantId === null"
+                  :loading="assistantNameLoading"
+                  @click.stop="updateName"
+                >
+                  Update Name
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-form>
+          <v-form v-model="passwordValid">
+            <v-row justify="space-around" align="start" no-gutters>
+              <v-col cols="6">
+                <v-text-field
+                  v-model="assistantPassword"
+                  dense
+                  label="Password"
+                  outlined
+                  type="password"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="4" class="my-1">
+                <v-btn
+                  class="action-card"
+                  outlined
+                  color="primary"
+                  :disabled="assistantPassword.length <=0 || assistantId === null"
+                  :loading="assistantPasswordLoading"
+                  @click.stop="updatePassword"
+                >
+                  Update Password
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-form>
+        </v-container>
+      </v-card>
+    </v-col>
+    <v-col cols="12">
       <v-card>
         <v-card-title>Staff Accounts </v-card-title>
         <div
@@ -28,12 +85,12 @@
             :search="search"
             :items-per-page="5"
           >
-          <template #item.grade="{item}">
-            <span>{{item.section.grade}}</span>
-          </template>
-          <template #item.section="{item}">
-            <span>{{item.section.section}}</span>
-          </template>
+            <template #item.grade="{ item }">
+              <span>{{ item.section.grade }}</span>
+            </template>
+            <template #item.section="{ item }">
+              <span>{{ item.section.section }}</span>
+            </template>
             <template #item.actions="{ item }">
               <div :key="item.id">
                 <!-- <v-btn icon><v-icon dense>{{icons.pencil}}</v-icon></v-btn> -->
@@ -45,29 +102,31 @@
         </v-card-text>
       </v-card>
     </v-col>
-    <v-col v-else cols="12">
-      <print-content :students="studentsToPrint" />
-    </v-col>
-    <v-dialog v-model="dialog" max-width="500px">
-      <Scanner v-if="dialog" @close="dialog = false" />
-    </v-dialog>
   </v-row>
 </template>
 
 <script>
 import { mdiCamera, mdiMagnify, mdiPencil, mdiPlay, mdiStop } from '@mdi/js'
 export default {
-  layout: "admin",
+  layout: 'admin',
   async asyncData({ $axios, $config }) {
     const { data } = await $axios.get(`${$config.apiURL}/api/users`)
-    return { staff: data }
+    const { data: assistant } = await $axios.get(
+      `${$config.apiURL}/api/users/withRole`,
+      { params: { role: 'assistant-admin' } }
+    )
+    return {
+      staff: data,
+      assistantFullName: assistant?.fullName,
+      assistantId: assistant?.id,
+    }
   },
   data() {
     return {
       audio: {},
-      dialog: false,
-      studentsToPrint: [],
-      print: false,
+      assistantNameLoading: false,
+      assistantPasswordLoading: false,
+      assistantPassword: '',
       search: '',
       headers: [
         {
@@ -103,12 +162,16 @@ export default {
         search: mdiMagnify,
         scan: mdiCamera,
       },
+      rules: {
+        required: (value) => !!value || 'Field is Required',
+        notEmpty: (value) => value.length > 0|| 'Field is not Empty Required',
+      },
+      nameValid: false,
+      passwordValid: false,
     }
   },
   async fetch() {
-    const { data } = await this.$axios.get(
-      `${this.$config.apiURL}/api/users`
-    )
+    const { data } = await this.$axios.get(`${this.$config.apiURL}/api/users`)
     this.staff = data
   },
   computed: {
@@ -122,6 +185,64 @@ export default {
     })
   },
   methods: {
+    async updateName() {
+      this.assistantNameLoading = true
+      await this.$nextTick()
+      try {
+        const { data: assistant } = await this.$axios.put(
+          `${this.$config.apiURL}/api/users/${this.assistantId}`,
+          {
+            fullName: this.assistantFullName,
+          }
+        );
+        this.$nuxt.$emit('notify', {
+          message: `Assistant Admin account updated.`,
+        })
+        this.assistantFullName = assistant.fullName
+      } catch (error) {
+        if (error.response) {
+          const notification = {
+            message: error.response.data.message,
+            status: error.response.status,
+          }
+          this.$nuxt.$emit('notify', notification)
+        } else {
+          this.$nuxt.$emit('notify', { message: 'Unknown Error', status: 500 })
+        }
+        console.log(error)
+      } finally {
+        this.assistantNameLoading = false
+      }
+    },
+     async updatePassword() {
+      this.assistantPasswordLoading = true
+      await this.$nextTick()
+      try {
+        await this.$axios.put(
+          `${this.$config.apiURL}/api/users/${this.assistantId}/changePassword`,
+          {
+            password: this.assistantPassword,
+          }
+        );
+        this.$nuxt.$emit('notify', {
+          message: `Assistant Admin account updated.`,
+        })
+        this.assistantPassword = "";
+      } catch (error) {
+        if (error.response) {
+          const notification = {
+            message: error.response.data.message,
+            status: error.response.status,
+          }
+          this.$nuxt.$emit('notify', notification)
+        } else {
+          this.$nuxt.$emit('notify', { message: 'Unknown Error', status: 500 })
+        }
+        console.log(error)
+      } finally {
+        this.assistantPasswordLoading = false
+      }
+    },
   },
 }
 </script>
