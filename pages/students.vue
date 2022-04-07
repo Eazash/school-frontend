@@ -38,7 +38,7 @@
             </template>
             <template #item.actions="{ item }">
               <div :key="item.id">
-                <!-- <v-btn icon><v-icon dense>{{icons.pencil}}</v-icon></v-btn> -->
+                <GenerateCodeButton :student="item"/>
                 <v-btn
                   icon
                   :disabled="item.audio === null"
@@ -56,7 +56,9 @@
       </v-card>
     </v-col>
     <v-col v-else cols="12">
-      <print-content :students="studentsToPrint" />
+      <keep-alive>
+        <print-content :students="studentsToPrint" />
+      </keep-alive>
     </v-col>
     <v-dialog v-model="dialog" max-width="500px">
       <Scanner v-if="dialog" @close="dialog = false" />
@@ -65,7 +67,7 @@
 </template>
 
 <script>
-import { mdiCamera, mdiMagnify, mdiPencil, mdiPlay, mdiStop } from '@mdi/js'
+import { mdiAutorenew, mdiCamera, mdiMagnify, mdiPlay, mdiStop } from '@mdi/js'
 export default {
   layout: 'admin',
   async asyncData({ $axios, $config }) {
@@ -114,7 +116,7 @@ export default {
         },
       ],
       icons: {
-        pencil: mdiPencil,
+        renew: mdiAutorenew,
         play: mdiPlay,
         stop: mdiStop,
         search: mdiMagnify,
@@ -164,14 +166,7 @@ export default {
       this.print = true
       this.studentsToPrint = payload
       await this.$nextTick()
-      window.print()
-      this.print = false
-    },
-    async printIDS() {
-      this.print = true
-      this.studentsToPrint = this.$refs.studentsTable.$children[0].filteredItems
-      await this.$nextTick()
-      window.print()
+      window.print()   
       this.print = false
     },
   },
