@@ -1,12 +1,12 @@
 <template>
   <div>
-    <div class="ma-2">
+    <div class="mx-2 my-1">
       <v-row no-gutters  align="center">
         <v-col cols="8">
           <h2 class="school-name">Greenland School</h2>
         </v-col>
         <v-col cols="3">
-          <img src="~/assets/logo.png" width="100" alt="" srcset="" />
+          <img src="/logo.jpg" width="75" alt="" srcset="" />
         </v-col>
       </v-row>
     </div>
