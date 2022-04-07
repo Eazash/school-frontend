@@ -8,6 +8,7 @@
           max-height="80vh"
           class="scroll"
           :loading="loading"
+          style="overflow-x: hidden"
         >
           <v-card-title>
             <span v-if="isAssistantAdmin">Scan Student IDs</span>
