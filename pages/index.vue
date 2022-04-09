@@ -27,6 +27,15 @@
                     @keyup.enter="scan"
                   ></v-text-field>
                 </v-col>
+                <template v-if="errored">
+                  <v-col cols="12">
+                    <v-container>
+                      <v-alert type="error" class="ma-auto">{{
+                        errorMessage
+                      }}</v-alert>
+                    </v-container>
+                  </v-col>
+                </template>
                 <v-col
                   v-for="(student, index) in reversedStudentList"
                   :key="index"
@@ -38,15 +47,7 @@
                     :play="index === 0"
                   />
                 </v-col>
-                <template v-if="errored">
-                  <v-col cols="12">
-                    <v-container>
-                      <v-alert type="error" class="ma-auto">{{
-                        errorMessage
-                      }}</v-alert>
-                    </v-container>
-                  </v-col>
-                </template>
+                
               </v-row>
             </v-container>
           </v-card-text>
@@ -124,7 +125,6 @@ export default {
         }
         console.log(error)
         this.errored = true
-        this.found = false
       } finally {
         this.loading = false
         this.focus()
